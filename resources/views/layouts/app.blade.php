@@ -1,76 +1,102 @@
-<!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <title>@yield('title') - Epic App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Animate.css for animations -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
-
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-
-    <!-- Scripts -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+        .sidebar {
+            height: 100vh;
+            background-color: #0d6efd;
+            padding-top: 1rem;
+            position: fixed;
+            transition: all 0.3s;
+        }
+        .sidebar a {
+            color: white;
+            display: block;
+            padding: 1rem;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .sidebar a:hover {
+            background: rgba(255,255,255,0.1);
+            border-left: 4px solid #fff;
+        }
+        .sidebar .active {
+            background: rgba(255,255,255,0.2);
+        }
+        .content {
+            margin-left: 250px;
+            padding: 2rem;
+            transition: margin-left 0.3s;
+        }
+        .navbar-custom {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 10px #0d6efd, 0 0 20px #0d6efd, 0 0 30px #0d6efd;
+            transition: 0.3s;
+        }
+    </style>
 
 </head>
 <body>
-    <div id="app">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container">
-    <a class="navbar-brand" href="{{ url('/') }}">M3 App</a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h4 class="text-center text-white mb-4">Laravel Chesda 🚀</h4>
+        <a href="/dashboard" class="{{ request()->is('dashboard') ? 'active' : '' }}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+        <a href="/contact" class="{{ request()->is('contact') ? 'active' : '' }}"><i class="bi bi-telephone-fill me-2"></i> Contact</a>
+        <a href="/profile" class="{{ request()->is('profile') ? 'active' : '' }}"><i class="bi bi-person-circle me-2"></i> Profile</a>
+        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <i class="bi bi-box-arrow-right me-2"></i> Logout
+        </a>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url('/') }}">Home</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url('/about') }}">About</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url('/contact') }}">Contact</a>
-        </li>
-
-        @guest
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('login') }}">Login</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('register') }}">Register</a>
-          </li>
-        @else
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url('/dashboard') }}">Dashboard</a>
-          </li>
-
-          <li class="nav-item">
-            <form method="POST" action="{{ route('logout') }}">
-              @csrf
-              <button class="btn btn-link nav-link" type="submit">Logout</button>
-            </form>
-          </li>
-        @endguest
-      </ul>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+            @csrf
+        </form>
     </div>
-  </div>
-</nav>
 
-        <main class="py-4">
-            @yield('content')
-        </main>
-    </div>
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+        <div class="container-fluid justify-content-end">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown me-5">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle me-2"></i>{{ Auth::user()->name ?? 'Guest' }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('logout') }}" 
+                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="content">
+        @yield('content')
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>
