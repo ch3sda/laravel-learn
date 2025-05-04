@@ -2,12 +2,18 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\PostController;
+use App\Models\Post;
+
+Route::get('/crud', [PostController::class, 'index'])->name('crud.home');
+Route::resource('posts', PostController::class)->except(['index']);
 
 // Guest routes (No login needed)
 Route::middleware('guest')->group(function () {
     Route::get('/', function () {
-        return view('home');
-    })->name('home');
+        $posts = Post::latest()->get();
+        return view('home', compact('posts'));
+    });
 
     Route::get('/about', function () {
         return view('about');
